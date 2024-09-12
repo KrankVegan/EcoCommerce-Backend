@@ -3,7 +3,7 @@ package com.mikkel.ecommerce.dto;
 import lombok.Data;
 
 @Data
-public class SingupDTO {
+public class SignupDTO {
 
     private String email;
 

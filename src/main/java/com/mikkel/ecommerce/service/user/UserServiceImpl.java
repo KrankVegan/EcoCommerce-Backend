@@ -1,7 +1,7 @@
 package com.mikkel.ecommerce.service.user;
 
 import com.mikkel.ecommerce.Repository.UserRepository;
-import com.mikkel.ecommerce.dto.SingupDTO;
+import com.mikkel.ecommerce.dto.SignupDTO;
 import com.mikkel.ecommerce.dto.UserDTO;
 import com.mikkel.ecommerce.entity.User;
 import com.mikkel.ecommerce.enums.UserRole;
@@ -17,13 +17,23 @@ public class UserServiceImpl implements UserService{
     private UserRepository userRepository;
 
     @Override
-    public UserDTO createUser(SingupDTO singupDTO) {
+    public UserDTO createUser(SignupDTO signupDTO) {
         User user = new User();
-        user.setName(singupDTO.getName());
-        user.setEmail(singupDTO.getEmail());
-        user.setPassword(new BCryptPasswordEncoder().encode(singupDTO.getPassword()));
+        user.setName(signupDTO.getName());
+        user.setEmail(signupDTO.getEmail());
         user.setUserRole(UserRole.USER);
-        userRepository.save(user);
-        return user.mapUserToUserDTO();
+        user.setPassword(new BCryptPasswordEncoder().encode(signupDTO.getPassword()));
+        User createdUser = userRepository.save(user);
+        UserDTO userDTO = new UserDTO();
+        userDTO.setId(createdUser.getId());
+        userDTO.setName(createdUser.getName());
+        userDTO.setEmail(createdUser.getEmail());
+        userDTO.setUserRole(createdUser.getUserRole());
+        return userDTO;
+    }
+
+    @Override
+    public boolean hasUserWithEmail(String email) {
+        return userRepository.findFirstByEmail(email) != null;
     }
 }

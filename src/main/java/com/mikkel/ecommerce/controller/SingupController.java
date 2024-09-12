@@ -1,6 +1,6 @@
 package com.mikkel.ecommerce.controller;
 
-import com.mikkel.ecommerce.dto.SingupDTO;
+import com.mikkel.ecommerce.dto.SignupDTO;
 import com.mikkel.ecommerce.dto.UserDTO;
 import com.mikkel.ecommerce.service.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,8 +19,12 @@ public class SingupController {
 
 
     @PostMapping("/sign-up")
-    public ResponseEntity<?> signupUser(@RequestBody SingupDTO singupDTO){
-        UserDTO createdUser = userService.createUser(singupDTO);
+    public ResponseEntity<?> signupUser(@RequestBody SignupDTO signupDTO){
+        UserDTO createdUser = userService.createUser(signupDTO);
+
+        if(userService.hasUserWithEmail(signupDTO.getEmail())){
+            return new ResponseEntity<>("Usuario ya Creado", HttpStatus.NOT_ACCEPTABLE);
+        }
 
         if(createdUser == null) {
             return new ResponseEntity<>("Usuario No Creado", HttpStatus.BAD_REQUEST);
